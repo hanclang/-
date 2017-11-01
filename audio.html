@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title></title>
+  </head>
+  <body style="height: 1000px;">
+    <div class="container">
+      <div class="img-area">
+        <img alt="loading" class="my-photo" data-src="./img/1.jpg">
+      </div>
+      <div class="img-area">
+        <img alt="loading" class="my-photo" data-src="./img/2.jpg">
+      </div>
+      <div class="img-area">
+        <img alt="loading" class="my-photo" data-src="./img/3.jpg">
+      </div>
+      <div class="img-area">
+        <img alt="loading" class="my-photo" data-src="./img/4.jpg">
+      </div>
+    </div>
+  </body>
+  <script type="text/javascript">
+    // document.documentElement.clientHeight 获取屏幕可视窗口高度
+    // document.documentElement.srcollTop 获取浏览器窗口顶部与文档顶部之间的距离，也就是滚动条滚动的距离
+    // element.offsetTop 获取元素相对与文档顶部的距离
+    function isInSight(el){
+      const bound = el.getBoundingClientRect();
+      const clientHeight = window.screen.height ;
+      let scrollTop = 0;
+      if(document.documentElement&&document.documentElement.scrollTop)
+         {
+             scrollTop=document.documentElement.srcollTop;
+         }
+         else if(document.body)
+         {
+             scrollTop=document.body.scrollTop;
+         }
+      console.log(scrollTop+"=============="+clientHeight + 100);
+      return bound.top + (-scrollTop) >  100;
+    }
+
+    window.onscroll = function computedDisplay(){//不管怎么操作的，只要滚动条动了就会触发这个行为
+    var curTop = document.documentElement.scrollTop || document.body.scrollTop;
+    var curHeight = document.documentElement.clientHeight || document.body.clientHeight;
+    const imgs = document.querySelectorAll('.my-photo');
+    console.log(curHeight);
+    Array.from(imgs).forEach(el => {
+      const bound = el.getBoundingClientRect();
+      console.log(bound.top + (curTop));
+      if(bound.top + (400) > curHeight){
+        loadImg(el);
+      }
+    })
+  }
+
+    function loadImg(el) {
+      if(!el.src){
+        const source = el.dataset.src;
+        el.src = source;
+      }
+    }
+
+
+    let previous = null;
+    function throttle(fn, mustRun = 500) {
+      const timer = null;
+      return function(){
+        const now = new Date();
+        const context = this;
+        const args = arguments;
+        if(!previous){
+          previous = now;
+        }
+        const remaining = now - previous;
+        if(mustRun && remaining >= mustRun) {
+          fn.apply(context, args);
+          previous = now;
+        }
+      }
+    }
+  </script>
+</html>

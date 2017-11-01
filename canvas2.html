@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+    <style type="text/css">
+        body{
+            background-color: black;
+        }
+        canvas{
+            background-color: white;
+        }
+    </style>
+    <script type="text/javascript">
+        window.onload= function(){
+            var oc= document.getElementById('c1');
+            var ogc=oc.getContext('2d');
+            var path = [];
+
+            oc.onmousedown = function(ev){
+                var ev=ev || window.event;
+                ogc.moveTo(ev.clientX-oc.offsetLeft,ev.clientY-oc.offsetTop);
+                path.push({x:ev.clientX-oc.offsetLeft, y:ev.clientY-oc.offsetTop, flag: 1})
+                document.onmousemove = function(ev){
+                    var ev = ev || window.event;
+                    ogc.lineTo(ev.clientX-oc.offsetLeft,ev.clientY-oc.offsetTop);
+                    path.push({x:ev.clientX-oc.offsetLeft, y:ev.clientY-oc.offsetTop, flag: 2})
+                    ogc.stroke();
+                };
+                document.onmouseup = function(){
+                    document.onmousemove = null;
+                    document.onmouseup = null;
+                    clearInterval(timer);
+                };
+
+            }
+
+            //用图片的方法
+            setInterval(function(){
+              var type = 'png';
+              var imgData = document.getElementById('c1').toDataURL(type);
+              document.getElementById('img').src = imgData;
+              console.log(imgData);
+            },1000)
+
+            var canvas = document.getElementById('canvas');
+            var ctx = canvas.getContext('2d');
+            //坐标点
+            let timer = setInterval(function(){
+              for(var i=0, len=path.length; i<len; i++){
+                if(path[i].flag == 1){
+                  ctx.moveTo(path[i].x, path[i].y)
+                }else if(path[i].flag == 2){
+                  ctx.lineTo(path[i].x, path[i].y);
+                  ctx.stroke();
+                }
+              }
+            },1000/30)
+        }
+    </script>
+</head>
+<body>
+    <canvas id="c1" width="400" height="400"></canvas>
+    <canvas id="canvas" width="400" height="400"></canvas>
+    <img id="img" style="background-color: #fff">
+</body>
+</html>

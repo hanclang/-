@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title></title>
+  </head>
+  <body>
+    <canvas id="canvas" width="300" height="300"></canvas>
+  </body>
+  <script type="text/javascript">
+    class Crood {
+      constructor(x=0, y=0) {
+        this.x = x;
+        this.y = y;
+      }
+      setCrood(x, y){
+        this.x = x;
+        this.y = y;
+      }
+      copy(){
+        return new Crood(this.x, this.y);
+      }
+    }
+
+    class ShootingStar {
+      constructor(init=new Crood, final=new Crood, size=3, speed=2, onDistory=null) {
+        this.init = init;
+        this.final = final;
+        this.size = size;
+        this.speed = speed;
+
+        this.dur = Math.sqrt(Math.pow(this.final.x - this.init.x, 2) + Math.pow(this.final.y - this.init.y, 2)) * 1000 /this.speed;
+
+        this.pass = 0;
+        this.prev = this.init.copy();
+        this.now = this.init.copy();
+        this.onDistory = onDistory;
+      }
+      draw(ctx, delta){
+        this.pass += delta;
+        this.pass = Math.min(this.pass, this.dur);
+
+        let percent = this.pass / this.dur;
+
+        this.now.setCrood(
+          this.init.x + (this.final.x - this.init.x) * percent,
+          this.init.y + (this.final.y - this.init.y) * percent
+        );
+
+        ctx.strokeStyle = '#fff';
+        ctx.lineCap = 'round';
+        ctx.lineWidth = this.size;
+        ctx.beginPath();
+        ctx.moveTo(this.now.x, this.now.y);
+        ctx.lineTo(this.prev.x, this.prev.y);
+        ctx.stroke();
+
+        this.prev.setCrood(this.now.x, this.now.y);
+        if(this.pass === this.dur){
+          this.distory();
+        }
+      }
+
+      distory(){
+        this.onDistory && this.onDistory();
+      }
+    }
+    let cvs = document.querySelector('canvas');
+    let ctx = cvs.getContext('2d');
+
+    let T;
+
+    let shootingStar = new ShootingStar(new Crood(100, 100), new Crood(400,400), 3, 200, () => {cancelAnimationFrame(T)});
+
+    let tick = (function(){
+      let now = (new Date()).getTime();
+      let last = now;
+      let delta;
+      return function(){
+        delta = now - last;
+        delta = delta > 500 ? 30 : (delta<16? 16:delta);
+        last = now;
+        console.log(delta);
+        T = requestAnimationFrame(tick);
+        ctx.save();
+        ctx.fillStyle = 'rgba(0,0,0,0.2)';
+        ctx.fillRect(0,0,cvs.width, cvs.height);
+        ctx.restore();
+        shootingStar.draw(ctx, delta);
+      }
+    })();
+    tick();
+  </script>
+</html>

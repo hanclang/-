@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>iframe</title>
+    <style media="screen">
+      *{margin: 0; padding: 0}
+      html,body{width: 100%;height: 100%;}
+      .wrap{display: grid;grid-template-columns: 200px auto;width: 100%; height: 100%;}
+      .fl{background: #777}
+      .fr{background: #000;}
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <div class="fl">
+        <ul>
+          <li>
+            <a class="dd" href="javascript:void(0);" data-link="http://www.jianshu.com/p/d183265a8dad">阿里</a>
+          </li>
+          <li>
+            <a class="dd" href="javascript:void(0);" data-link="http://www.runoob.com/jsref/prop-canvas-linecap.html">腾讯</a>
+          </li>
+          <li>
+            <a class="dd" href="javascript:void(0);" data-link="http://www.cnblogs.com/ToNi/archive/2015/04/07/4397669.html">淘宝</a>
+          </li>
+          <li>
+            <a class="dd" href="javascript:void(0);" data-link="http://www.cnblogs.com/ToNi/archive/2015/04/07/4397669.html">天猫</a>
+          </li>
+        </ul>
+      </div>
+      <div id="right">
+
+      </div>
+    </div>
+    <script type="text/javascript">
+      var $dd = document.querySelectorAll('.dd');
+      var $arrDom = Array.from($dd);
+      $arrDom.forEach((dom, index) => {
+        dom.onclick = function(){
+          let title = this.innerHTML;
+          let link = this.dataset.link;
+          console.log(title+"============"+link);
+        }
+      })
+    </script>
+  </body>
+</html>
